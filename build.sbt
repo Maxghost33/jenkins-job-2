@@ -23,5 +23,3 @@ libraryDependencies ++= Seq(
   "org.eclipse.jgit" % "org.eclipse.jgit" % "4.9.0.201710071750-r",
   "com.michaelpollmeier" % "versionsort" % "1.0.0"
 )
-
-scriptedLaunchOpts += s"-Dproject.version=${version.value}"
