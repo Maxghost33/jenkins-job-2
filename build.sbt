@@ -19,9 +19,6 @@ scmInfo := Some(ScmInfo(url("https://github.com/sbt/sbt-git"), "scm:git:git@gith
 
 crossSbtVersions := List("0.13.17", "1.1.5")
 
-enablePlugins(GitVersioning, SbtPlugin)
-git.baseVersion := "1.0"
-
 libraryDependencies ++= Seq(
   "org.eclipse.jgit" % "org.eclipse.jgit" % "4.9.0.201710071750-r",
   "com.michaelpollmeier" % "versionsort" % "1.0.0"
