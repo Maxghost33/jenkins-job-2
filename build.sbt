@@ -1,25 +1,31 @@
-lazy val root = project
-  .in(file("."))
-  .settings(
-    name := "dotty-example-project",
-    description := "Example sbt project that compiles using Dotty",
-    version := "0.1.0",
+name := "scala-sbt-cross-compile"
 
-    scalaVersion := "0.22.0-RC1"
-  )
+organization := "sample"
 
-organization := "com.typesafe.sbt"
-name := "sbt-git"
-licenses := Seq(("BSD-2-Clause", url("https://opensource.org/licenses/BSD-2-Clause")))
-description := "An sbt plugin that offers git features directly inside sbt"
-developers := List(Developer("jsuereth", "Josh Suereth", "joshua suereth gmail com", url("http://jsuereth.com/")))
-startYear := Some(2011)
-homepage := scmInfo.value map (_.browseUrl)
-scmInfo := Some(ScmInfo(url("https://github.com/sbt/sbt-git"), "scm:git:git@github.com:sbt/sbt-git.git"))
+version := "1.0"
 
-crossSbtVersions := List("0.13.17", "1.1.5")
+crossScalaVersions := Seq("2.12.7", "2.11.12", "2.10.7")
 
-libraryDependencies ++= Seq(
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "4.9.0.201710071750-r",
-  "com.michaelpollmeier" % "versionsort" % "1.0.0"
-)
+scalaVersion := "2.12.7"
+
+// add dependencies on standard Scala modules, in a way
+// supporting cross-version publishing
+// taken from: http://github.com/scala/scala-module-dependency-sample
+libraryDependencies := {
+  CrossVersion.partialVersion(scalaVersion.value) match {
+    // if Scala 2.12+ is used, use scala-swing 2.x
+    case Some((2, scalaMajor)) if scalaMajor >= 12 =>
+      libraryDependencies.value ++ Seq(
+        "org.scala-lang.modules" %% "scala-xml" % "1.1.1",
+        "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.1",
+        "org.scala-lang.modules" %% "scala-swing" % "2.0.3")
+    case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+      libraryDependencies.value ++ Seq(
+        "org.scala-lang.modules" %% "scala-xml" % "1.1.1",
+        "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.1",
+        "org.scala-lang.modules" %% "scala-swing" % "1.0.2")
+    case _ =>
+      // or just libraryDependencies.value if you don't depend on scala-swing
+      libraryDependencies.value :+ "org.scala-lang" % "scala-swing" % scalaVersion.value
+  }
+}
